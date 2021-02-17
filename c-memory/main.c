@@ -3,10 +3,18 @@
  * Main program file.
  */
 
+// C11 standard headers.
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdalign.h>
 #include <stddef.h>
+#include <stdint.h>
+
+// GNU C Library headers.
+#include <unistd.h>
+
+// Example program headers.
+#include "utility.h"
 
 void recurse() {
 	recurse();
@@ -20,11 +28,33 @@ void recurse() {
 int main (int argc, char *argv[]) {
 	printf("This GNU Autotools skeleton project works!\n\n");
 
-//	char *buffer = (char *) malloc(1024*1024);
-//
-//
-//
-//	free(buffer);
+
+	for (int i = 0; i < 64; i++) {
+		if (i % 2 == 0)
+			printf("a");
+		else
+			printf("b");
+	}
+	printf("\n");
+
+	uint_least64_t t = 0;
+	t = ~t;
+	printf("%zX\n", t);
+	printf("%s\n", format_size_t(t));
+
+	uint_least64_t sz = 1024*1024 * 68;
+
+	printf("Allocating %s sized character array.\n", format_size_t(sz));
+
+	return EXIT_SUCCESS;
+
+	char *buffer = (char *) malloc(sz * sizeof(char));
+
+	buffer[sz-1] = 'a';
+
+	sleep(5);
+
+	free(buffer);
 
 	// recurse();
 

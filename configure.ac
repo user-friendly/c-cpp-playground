@@ -2,9 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([GNU Tools Noob Guide], [1.0.0], [maintainer@example.com])
-AM_INIT_AUTOMAKE([subdir-objects])
-AC_CONFIG_SRCDIR([src/main.c])
+AC_INIT([C/C++ Playground], [1.0.0], [pivanov@foobar.ninja])
+dnl AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE()
+AC_CONFIG_SRCDIR([c-memory/main.c])
 AC_CONFIG_HEADERS([config.h])
 # M4 macros specific to this project.
 AC_CONFIG_MACRO_DIR([m4-project])
@@ -15,6 +16,11 @@ AX_CHECK_ENABLE_PEDANTIC([no])
 
 # Checks for programs.
 AC_PROG_CC([clang gcc])
+AC_PROG_CXX([clang++ c++ g++])
+AC_PROG_CPP([clang gcc])
+
+# C++ checks.
+AX_CXX_COMPILE_STDCXX_17([noext], [mandatory])
 
 # Checks for libraries.
 
@@ -26,7 +32,10 @@ AX_CHECK_COMPILE_FLAG([-std=c11], [CFLAGS+=" -std=c11"],
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([
+    Makefile
+    c-memory/Makefile
+])
 AC_OUTPUT
 
 echo \
