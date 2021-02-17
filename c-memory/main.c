@@ -3,6 +3,8 @@
  * Main program file.
  */
 
+#include "config.h"
+
 // C11 standard headers.
 #include <stdlib.h>
 #include <stdio.h>

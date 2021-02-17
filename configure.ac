@@ -3,10 +3,11 @@
 
 AC_PREREQ([2.69])
 AC_INIT([C/C++ Playground], [1.0.0], [pivanov@foobar.ninja])
-dnl AM_INIT_AUTOMAKE([subdir-objects])
 AM_INIT_AUTOMAKE()
-AC_CONFIG_SRCDIR([c-memory/main.c])
+
+AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
+
 # M4 macros specific to this project.
 AC_CONFIG_MACRO_DIR([m4-project])
 
@@ -20,22 +21,26 @@ AC_PROG_CXX([clang++ c++ g++])
 AC_PROG_CPP([clang gcc])
 
 # C++ checks.
+AX_CXX_HAVE_STD
+AX_CXX_NAMESPACES
 AX_CXX_COMPILE_STDCXX_17([noext], [mandatory])
 
 # Checks for libraries.
 
 # Checks for header files.
+AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AX_CHECK_COMPILE_FLAG([-std=c11], [CFLAGS+=" -std=c11"],
     [echo -e "\tcompiler needs to support the C11 standard"; exit 1;])
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
+AC_FUNC_MALLOC
 
-AC_CONFIG_FILES([
-    Makefile
-    c-memory/Makefile
-])
+AC_CONFIG_FILES([Makefile
+                 c-memory/Makefile
+                 cpp-btree/Makefile])
 AC_OUTPUT
 
 echo \
