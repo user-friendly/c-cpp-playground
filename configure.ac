@@ -39,6 +39,7 @@ AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
 
 AC_CONFIG_FILES([Makefile
+				 array/Makefile
                  c-memory/Makefile
                  cpp-btree/Makefile])
 AC_OUTPUT

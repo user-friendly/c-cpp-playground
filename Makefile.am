@@ -1,1 +1,1 @@
-SUBDIRS = c-memory cpp-btree
+SUBDIRS = array c-memory cpp-btree
