@@ -6,6 +6,7 @@
 #include "config.h"
 
 #include <vector>
+#include <unordered_set>
 
 // C11 standard headers.
 //#include <cstdlib>
@@ -25,6 +26,7 @@
 using namespace std;
 
 void sort_selection(list&);
+void sort_insertion(list&);
 
 /**
  * Program entry point.
@@ -38,6 +40,23 @@ int main (int argc, char *argv[]) {
 
 	if (print_generate_lists(argc, argv)) {
 		return EXIT_SUCCESS;
+	}
+
+	if (argc < 2) {
+	    cerr << "error: no sorting algorithm supplied" << endl;
+	    return EXIT_FAILURE;
+	}
+
+	// TODO Implement a custom struct, members: sort function and label.
+	unordered_set<string> algos {
+	    "select"s,
+	    "insert"s
+	};
+
+	auto al = algos.find(argv[1]);
+	if (al == algos.end()) {
+	    cerr << "error: sorting algorithm `" << argv[1] << "` not found" << endl;
+        return EXIT_FAILURE;
 	}
 
 	vector<list> v;
@@ -62,7 +81,15 @@ int main (int argc, char *argv[]) {
 			it++;
 		}
 
-		sort_selection(lst);
+		if (*al == "select"s) {
+		    sort_selection(lst);
+		} else if (*al == "insert"s) {
+		    sort_insertion(lst);
+		}
+		else {
+		    cerr << "error: algorithm `" << *al << "` not found, this should not be the case at this point" << endl;
+		    return EXIT_FAILURE;
+		}
 
 		cout << lst << endl;
 	}
@@ -70,29 +97,60 @@ int main (int argc, char *argv[]) {
 	return EXIT_SUCCESS;
 }
 
+/**
+ * Selection sort.
+ *
+ * O(n^2)
+ * Not stable.
+ *
+ * Goes through 1/2(n^2 - n) comparisons and n-1 swaps.
+ */
 void sort_selection(list& lst) {
 	if (lst.size() < 2) {
 		return;
 	}
 
 	// Index of minimum.
-	int min_i;
-	// Holds the temporary value, used for the swap.
-	int tmp;
+	list::value_type m;
 	// Outer iteration loop.
-	for (int i = 0; i < lst.size(); i++) {
-		min_i = i;
+	for (list::size_type i = 0; i < lst.size(); i++) {
+		m = i;
 		// Find the minimum in the rest of the array.
-		for (int j = i+1; j < lst.size(); j++) {
-			if (lst[min_i] > lst[j]) {
-				min_i = j;
+		for (list::size_type j = i+1; j < lst.size(); j++) {
+			if (lst[m] > lst[j]) {
+				m = j;
 			}
 		}
 		// Swap current element with minimum on positive index change.
-		if (min_i > i) {
-			tmp = lst[i];
-			lst[i] = lst[min_i];
-			lst[min_i] = tmp;
+		if (m > i) {
+		    swap(lst[i], lst[m]);
 		}
 	}
+};
+
+/**
+ * Insertion sort.
+ *
+ * O(n^2)
+ * Stable.
+ */
+void sort_insertion(list& lst) {
+    if (lst.size() < 2) {
+        return;
+    }
+
+    list::value_type x;
+    list::size_type j;
+
+    // Begin iteration at the second element onwards.
+    for (list::size_type i = 1; i < lst.size(); i++) {
+        // Capture current element's value.
+        x = lst[i];
+        j = i-1;
+        // Iterate backwards, shifting elements that are greater than the current.
+        for (; j >= 0 && lst[j] > x; j--) {
+            lst[j+1] = lst[j];
+        }
+        lst[j+1] = x;
+    }
 };

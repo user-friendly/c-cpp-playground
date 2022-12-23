@@ -1,3 +1,7 @@
+# Project specific.
+
+/data
+
 # GNU Autotools
 
 # http://www.gnu.org/software/automake
