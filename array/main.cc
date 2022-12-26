@@ -21,12 +21,36 @@
 #include <iterator>
 #include <sstream>
 
+#include <functional>
+
 #include "utility.h"
 
 using namespace std;
 
+/**
+ * Selection sort.
+ *
+ * O(n^2)
+ * Not stable.
+ *
+ * Goes through 1/2(n^2 - n) comparisons and n-1 swaps.
+ */
 void sort_selection(list&);
+
+/**
+ * Insertion sort.
+ *
+ * O(n^2)
+ * Stable.
+ */
 void sort_insertion(list&);
+
+/**
+ * Merge sort.
+ *
+ * O(n log n)
+ */
+void sort_merge(list&);
 
 /**
  * Program entry point.
@@ -50,7 +74,8 @@ int main (int argc, char *argv[]) {
 	// TODO Implement a custom struct, members: sort function and label.
 	unordered_set<string> algos {
 	    "select"s,
-	    "insert"s
+	    "insert"s,
+	    "merge"s,
 	};
 
 	auto al = algos.find(argv[1]);
@@ -85,8 +110,9 @@ int main (int argc, char *argv[]) {
 		    sort_selection(lst);
 		} else if (*al == "insert"s) {
 		    sort_insertion(lst);
-		}
-		else {
+		} else if (*al == "merge"s) {
+            sort_merge(lst);
+		} else {
 		    cerr << "error: algorithm `" << *al << "` not found, this should not be the case at this point" << endl;
 		    return EXIT_FAILURE;
 		}
@@ -97,14 +123,6 @@ int main (int argc, char *argv[]) {
 	return EXIT_SUCCESS;
 }
 
-/**
- * Selection sort.
- *
- * O(n^2)
- * Not stable.
- *
- * Goes through 1/2(n^2 - n) comparisons and n-1 swaps.
- */
 void sort_selection(list& lst) {
 	if (lst.size() < 2) {
 		return;
@@ -154,3 +172,94 @@ void sort_insertion(list& lst) {
         lst[j+1] = x;
     }
 };
+
+void sort_merge(list& lst) {
+    using IT = list::size_type;
+
+    list& a = lst;
+    list b (lst.size());
+
+    IT m = a.size() / 2,
+            k = 0, j = m;
+
+    // Test merge functionality.
+    for (IT i = k; i < a.size(); i++) {
+        // This *seems* to work, but it's poorly optimized.
+        if (a[k] == a[j] && k < m) {
+            b[i] = a[k++];
+            continue;
+        }
+
+        if (a[k] > a[j] && j < a.size()) {
+            b[i] = a[j++];
+            continue;
+        }
+
+        if (a[k] < a[j] && k < m) {
+            b[i] = a[k++];
+            continue;
+        }
+
+        if (k < m) {
+            b[i] = a[k++];
+        } else {
+            b[i] = a[j++];
+        }
+
+
+        // This works too, optimized (from wiki).
+//        if (k < lst.size() / 2 && (j >= lst.size() || lst[k] <= lst[j])) {
+//            b[i] = lst[k++];
+//        } else {
+//            b[i] = lst[j++];
+//        }
+    }
+
+    cout << b << endl;
+
+    return;
+
+
+    auto split = [&](auto self, IT i, IT j) -> void {
+        if (j - i <= 1) {
+            return;
+        }
+
+        self(self, i, (j + i) / 2);
+        self(self, (j + i) / 2, j);
+
+        cout << "i: " << i << ", j: " << j << " ";
+
+        cout << "[";
+        IT a = i;
+        for (; a < j-1; a++) {
+            cout << lst[a] << " ";
+        }
+        cout << lst[a];
+        cout << "]" << endl;
+    };
+
+    split(split, 0, lst.size());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
