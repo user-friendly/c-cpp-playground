@@ -76,6 +76,7 @@ int main (int argc, char *argv[]) {
 	    "select"s,
 	    "insert"s,
 	    "merge"s,
+	    "stlsort"s,
 	};
 
 	auto al = algos.find(argv[1]);
@@ -93,6 +94,7 @@ int main (int argc, char *argv[]) {
 	string line;
 	while (getline(cin, line)) {
 	    if (ignore_lines-- > 0) {
+	        cout << line << endl;
 	        continue;
 	    }
 
@@ -112,6 +114,8 @@ int main (int argc, char *argv[]) {
 		    sort_insertion(lst);
 		} else if (*al == "merge"s) {
             sort_merge(lst);
+		} else if (*al == "stlsort"s) {
+		    std::sort(lst.begin(), lst.end());
 		} else {
 		    cerr << "error: algorithm `" << *al << "` not found, this should not be the case at this point" << endl;
 		    return EXIT_FAILURE;
@@ -176,70 +180,50 @@ void sort_insertion(list& lst) {
 void sort_merge(list& lst) {
     using IT = list::size_type;
 
-    list& a = lst;
-    list b (lst.size());
+    // Initial list copy.
+    list buff = lst;
+    // Get the fixed array size.
+    IT sz = lst.size();
 
-    IT m = a.size() / 2,
-            k = 0, j = m;
-
-    // Test merge functionality.
-    for (IT i = k; i < a.size(); i++) {
-        // This *seems* to work, but it's poorly optimized.
-        if (a[k] == a[j] && k < m) {
-            b[i] = a[k++];
-            continue;
-        }
-
-        if (a[k] > a[j] && j < a.size()) {
-            b[i] = a[j++];
-            continue;
-        }
-
-        if (a[k] < a[j] && k < m) {
-            b[i] = a[k++];
-            continue;
-        }
-
-        if (k < m) {
-            b[i] = a[k++];
-        } else {
-            b[i] = a[j++];
-        }
-
-
-        // This works too, optimized (from wiki).
-//        if (k < lst.size() / 2 && (j >= lst.size() || lst[k] <= lst[j])) {
-//            b[i] = lst[k++];
-//        } else {
-//            b[i] = lst[j++];
-//        }
-    }
-
-    cout << b << endl;
-
-    return;
-
-
-    auto split = [&](auto self, IT i, IT j) -> void {
-        if (j - i <= 1) {
+    // `buff_switch` is a toggle to switch between copy to buff/lst.
+    auto split = [&](auto self, IT b, IT e, bool buff_switch) -> void {
+        if (e - b <= 1) {
             return;
         }
 
-        self(self, i, (j + i) / 2);
-        self(self, (j + i) / 2, j);
+        IT m = (e + b) / 2,
+            k = b, j = m;
 
-        cout << "i: " << i << ", j: " << j << " ";
+        self(self, b, m, !buff_switch);
+        self(self, m, e, !buff_switch);
 
-        cout << "[";
-        IT a = i;
-        for (; a < j-1; a++) {
-            cout << lst[a] << " ";
+        list* A = buff_switch ? &lst : &buff;
+        list* B = buff_switch ? &buff : &lst;
+
+        for (IT i = k; i < e; i++) {
+            if (k < m && (j >= e || (*A)[k] <= (*A)[j])) {
+                (*B)[i] = (*A)[k++];
+            } else {
+                (*B)[i] = (*A)[j++];
+            }
         }
-        cout << lst[a];
-        cout << "]" << endl;
+
+        // TODO Remove debug code.
+//        cout << "i: " << b << ", j: " << e << " ";
+//        cout << "[";
+//        IT a = b;
+//        for (; a < e-1; a++) {
+//            cout << lst[a] << " ";
+//        }
+//        cout << lst[a];
+//        cout << "]" << endl;
     };
 
-    split(split, 0, lst.size());
+    // The first call to split() should set the toggle switch to false.
+    split(split, 0, lst.size(), false);
+
+    // TODO Remove debug code.
+//    cout << "buff: " << buff << endl;
 }
 
 

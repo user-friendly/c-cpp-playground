@@ -33,7 +33,7 @@ std::ostream& operator<<(std::ostream& os, const list& lst);
 #define COMMAND_HELP "Usage: ary [OPTIONS] [ALGO]" \
 	"\nTest various array sorting algorithms." \
 	"\n" \
-	"\nThe [ALGO] argument is the algorithm to sort by. Can be one of: select, insert, merge" \
+	"\nThe [ALGO] argument is the algorithm to sort by. Can be one of: select, insert, merge, stlsort" \
 	"\n" \
 	"\nIf the option `-g` is used, generate lists of random numbers." \
       /*----------------------------------------------------------------------------*/ \
