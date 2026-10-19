@@ -90,13 +90,13 @@ int main (int argc, char *argv[]) {
 	using ii_type = istream_iterator<int>;
 	ii_type it_end = ii_type();
 
-	int ignore_lines = 2;
+	// int ignore_lines = 2
 	string line;
 	while (getline(cin, line)) {
-	    if (ignore_lines-- > 0) {
-	        cout << line << endl;
-	        continue;
-	    }
+	    // if (ignore_lines-- > 0) {
+	    //     cout << line << endl;
+	    //     continue;
+	    // }
 
 		istringstream ss {line};
 		ii_type it {ss};

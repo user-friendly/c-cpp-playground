@@ -14,13 +14,10 @@
 
 // GNU C Library headers.
 #include <unistd.h>
+#include <inttypes.h>
 
 // Example program headers.
 #include "utility.h"
-
-void recurse() {
-	recurse();
-}
 
 /**
  * Program entry point.
@@ -28,8 +25,7 @@ void recurse() {
  * @see https://en.cppreference.com/w/c/language/main_function
  */
 int main (int argc, char *argv[]) {
-	printf("This GNU Autotools skeleton project works!\n\n");
-
+    printf("This GNU Autotools skeleton project works!\n\n");
 
 	for (int i = 0; i < 64; i++) {
 		if (i % 2 == 0)
@@ -48,17 +44,22 @@ int main (int argc, char *argv[]) {
 
 	printf("Allocating %s sized character array.\n", format_size_t(sz));
 
-	return EXIT_SUCCESS;
-
 	char *buffer = (char *) malloc(sz * sizeof(char));
+
+    /* { */
+    /*   static const char alphabet[] = "abcdefghijklmnopqrstuvwxyz"; */
+    /*   const size_t n = sizeof(alphabet) - 1; */
+
+    /*   for (size_t i = 0; i < sz; i++) { */
+    /*     buffer[i] = alphabet[rand() % n]; */
+    /*   } */
+    /* } */
 
 	buffer[sz-1] = 'a';
 
-	sleep(5);
+	sleep(1);
 
 	free(buffer);
-
-	// recurse();
 
 	typedef struct T T;
 	struct T {
